@@ -8,8 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import static java.lang.System.exit;
+
+import com.joestelmach.natty.Parser;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
@@ -21,6 +25,13 @@ import org.xml.sax.SAXException;
  *
  */
 public class App {
+    // The cached pattern for case 5
+    private static final Pattern P = Pattern.compile(
+            Pattern.quote("date"), Pattern.CASE_INSENSITIVE);
+    private static final Parser parser = new Parser();
+    private static final Calendar cal = Calendar.getInstance();
+
+
 
     public static void main(String[] args) throws IOException, SAXException, TikaException {
         if (args.length < 1) {
@@ -39,7 +50,21 @@ public class App {
                 System.out.println(filePath);
                 try (InputStream is = Files.newInputStream(filePath)) {
                     Metadata metadata = getMetadata(is);
-                    Arrays.stream(metadata.names()).forEach(metaName -> System.out.println(" " + metaName + " :" + metadata.get(metaName)));
+                    Arrays.stream(metadata.names()).forEach(strMetaName -> {
+                        if (P.matcher(strMetaName).find()) {
+                            parser.parse(metadata.get(strMetaName)).forEach(group -> group.getDates().forEach(date -> {
+                                cal.setTime(date);
+                                int year = cal.get(Calendar.YEAR);
+                                int month = cal.get(Calendar.MONTH) + 1;
+                                int day = cal.get(Calendar.DAY_OF_MONTH);
+                                System.out.println(" " + strMetaName + " : year= " + year + ", month= " + month + "," +
+                                        " day= " + day);
+                            }));
+
+
+                        }
+
+                    });
                 } catch (IOException | SAXException | TikaException e) {
                     e.printStackTrace();
                 }
