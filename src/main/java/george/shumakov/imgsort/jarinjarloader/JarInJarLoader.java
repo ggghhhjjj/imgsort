@@ -22,7 +22,7 @@ import java.util.jar.Manifest;
  *
  * @author George Shumakov <george.shumakov@gmail.com>
  */
-public class jarinjarloader {
+public class JarInJarLoader {
 
     private static class ManifestInfo {
 

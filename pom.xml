@@ -53,7 +53,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>george.shumakov.imgsort.jarinjarloader.jarinjarloader</mainClass>
+                            <mainClass>george.shumakov.imgsort.jarinjarloader.JarInJarLoader</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Rsrc-Main-Class>george.shumakov.imgsort.App</Rsrc-Main-Class>
